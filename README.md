@@ -47,7 +47,7 @@ The model is evaluated on synthetic test sets to validate the Physics-Informed h
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/MATE-Event-Classifier-DL.git
+git clone https://github.com/Edfghdrtxxx/MATE-Event-Classifier-DL.git
 cd MATE-Event-Classifier-DL
 
 # Create virtual environment (recommended)
@@ -161,7 +161,7 @@ If you use this code in your research, please cite:
   title={MATE-Event-Classifier-DL: Physics-Informed Deep Learning for TPC Data Analysis},
   author={Zhiheng Hu},
   year={2025},
-  url={https://github.com/YOUR_USERNAME/MATE-Event-Classifier-DL}
+  url={https://github.com/Edfghdrtxxx/MATE-Event-Classifier-DL}
 }
 ```
 
