@@ -1,0 +1,30 @@
+# Hyperparameters for MATE-Event-Classifier-DL
+# Physics-Informed Deep Learning for MATE Experiment
+# Binary Classification: 3He vs 4He particles
+
+model:
+  num_classes: 2              # Binary classification (3He vs 4He)
+  num_physics_params: 4       # Moment of Inertia features (I_xx, I_yy, I_xy, Eigen_Ratio)
+  embed_dim: 256              # Transformer embedding dimension
+  num_heads: 8                # Number of attention heads
+  num_layers: 4               # Number of transformer encoder layers
+  dropout: 0.1                # Dropout rate
+  in_channels: 2              # TPC data channels (Charge + Time)
+
+training:
+  batch_size: 64              # Batch size for training
+  learning_rate: 0.001        # Initial learning rate
+  epochs: 80                  # Maximum number of epochs
+  weight_decay: 1e-5          # L2 regularization
+  save_dir: "checkpoints"     # Directory to save model checkpoints
+
+data:
+  img_size: 64                # Image resolution (64x64 for MATE TPC)
+  data_dir: "../dataset/HDF5_Form"  # Path to HDF5 data files
+  num_workers: 4              # Number of data loading workers
+  train_split: 0.8            # Fraction of data for training (rest for val/test)
+
+evaluation:
+  batch_size: 32              # Batch size for evaluation
+  num_vis_samples: 5          # Number of samples to visualize
+  output_dir: "evaluation_results"  # Directory for evaluation outputs
