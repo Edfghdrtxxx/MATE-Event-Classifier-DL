@@ -157,7 +157,7 @@ We are actively working on bridging the gap between simulation and reality:
 If you use this code in your research, please cite:
 
 ```bibtex
-@software{mate_event_classifier_2024,
+@software{mate_event_classifier_2025,
   title={MATE-Event-Classifier-DL: Physics-Informed Deep Learning for TPC Data Analysis},
   author={Zhiheng Hu},
   year={2025},
@@ -173,3 +173,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **MATESIM Toolkit**: Monte Carlo simulation framework based on Geant4
 - **MATE-TPC Collaboration**: For providing the experimental context and physics insights
+
