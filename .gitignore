@@ -42,6 +42,7 @@ checkpoints/
 evaluation_results/
 training_logs/
 *.log
+demo_outputs/
 
 # Data (optional - uncomment if you don't want to track data)
 # dataset/
@@ -60,3 +61,16 @@ htmlcov/
 # Temporary files
 *.tmp
 test_*.png
+
+# Git utility scripts (not part of the scientific code)
+fix_push.bat
+upload_to_github.bat
+*.md.backup
+
+# Chinese documentation (personal notes, not for public repo)
+*中文*.md
+*指南*.md
+*总结*.md
+*清单*.md
+如何*.md
+

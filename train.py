@@ -1,3 +1,4 @@
+import yaml
 import argparse
 import torch
 import torch.nn as nn
@@ -170,30 +171,36 @@ def train(args):
     print(f"{'='*60}")
 
 if __name__ == "__main__":
+    
+    # Load configuration from config.yaml
+    config_path = os.path.join(os.path.dirname(__file__), 'configs', 'config.yaml')
+    with open(config_path, 'r') as f:
+        config = yaml.safe_load(f)
+
     parser = argparse.ArgumentParser(description="MATE Event Classifier Training")
     
     # Data parameters
-    parser.add_argument('--data_dir', type=str, default='../dataset/HDF5_Form',
+    parser.add_argument('--data_dir', type=str, default=config['data']['data_dir'],
                        help='Directory containing HDF5 data files')
     parser.add_argument('--max_samples_per_class', type=int, default=None,
                        help='Maximum samples per class (None = use all data)')
     
     # Training parameters
-    parser.add_argument('--epochs', type=int, default=80, 
+    parser.add_argument('--epochs', type=int, default=config['training']['epochs'], 
                        help='Number of training epochs')
-    parser.add_argument('--batch_size', type=int, default=64, 
+    parser.add_argument('--batch_size', type=int, default=config['training']['batch_size'], 
                        help='Batch size for training')
-    parser.add_argument('--lr', type=float, default=0.001,
+    parser.add_argument('--lr', type=float, default=config['training']['learning_rate'],
                        help='Learning rate')
-    parser.add_argument('--num_workers', type=int, default=4,
+    parser.add_argument('--num_workers', type=int, default=config['data']['num_workers'],
                        help='Number of data loading workers')
     
     # Model parameters
-    parser.add_argument('--num_classes', type=int, default=2, 
+    parser.add_argument('--num_classes', type=int, default=config['model']['num_classes'], 
                        help='Number of classes (2 for 3He vs 4He)')
     
     # Save parameters
-    parser.add_argument('--save_dir', type=str, default='checkpoints',
+    parser.add_argument('--save_dir', type=str, default=config['training']['save_dir'],
                        help='Directory to save model checkpoints')
     
     args = parser.parse_args()

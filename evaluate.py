@@ -1,3 +1,4 @@
+import yaml
 import argparse
 import torch
 import numpy as np
@@ -184,6 +185,12 @@ def evaluate(args):
     print(f"{'='*60}")
 
 if __name__ == "__main__":
+    
+    # Load configuration from config.yaml
+    config_path = os.path.join(os.path.dirname(__file__), 'configs', 'config.yaml')
+    with open(config_path, 'r') as f:
+        config = yaml.safe_load(f)
+
     parser = argparse.ArgumentParser(description="MATE Event Classifier Evaluation")
     
     # Model parameters
@@ -191,11 +198,11 @@ if __name__ == "__main__":
                        help='Path to model checkpoint')
     
     # Data parameters
-    parser.add_argument('--data_dir', type=str, default='../dataset/HDF5_Form',
+    parser.add_argument('--data_dir', type=str, default=config['data']['data_dir'],
                        help='Directory containing HDF5 data files')
-    parser.add_argument('--batch_size', type=int, default=32,
+    parser.add_argument('--batch_size', type=int, default=config['evaluation']['batch_size'],
                        help='Batch size for evaluation')
-    parser.add_argument('--num_workers', type=int, default=4,
+    parser.add_argument('--num_workers', type=int, default=config['data']['num_workers'],
                        help='Number of data loading workers')
     parser.add_argument('--max_samples_per_class', type=int, default=None,
                        help='Maximum samples per class (None = use all)')
@@ -203,13 +210,13 @@ if __name__ == "__main__":
     # Visualization parameters
     parser.add_argument('--visualize_attention', action='store_true', default=True,
                        help='Generate attention map visualizations')
-    parser.add_argument('--num_vis_samples', type=int, default=5,
+    parser.add_argument('--num_vis_samples', type=int, default=config['evaluation']['num_vis_samples'],
                        help='Number of samples to visualize')
     parser.add_argument('--show_individual_heads', action='store_true',
                        help='Show individual attention heads')
     
     # Output parameters
-    parser.add_argument('--output_dir', type=str, default='evaluation_results',
+    parser.add_argument('--output_dir', type=str, default=config['evaluation']['output_dir'],
                        help='Directory to save evaluation results')
     
     args = parser.parse_args()

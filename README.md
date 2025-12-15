@@ -30,17 +30,17 @@ This project implements a **Physics-Informed Hybrid Architecture** that fuses Ti
 
 ## Architecture & Visuals
 
-![Cross-Attention Workflow Schematic](image-4.png)
+![Cross-Attention Workflow Schematic](assets/images/workflow_schematic.png)
 *Physics-informed hybrid architecture combining ResNet-18 and Vision Transformer with cross-attention mechanism.*
 
 ## Performance & Reliability
 
 The model is evaluated on synthetic test sets to validate the Physics-Informed hypothesis.
 
-![Dynamic Comparison](image-3.png)
+![Dynamic Comparison](assets/images/performance_comparison.png)
 *Comparison of model accuracy with and without Physics-Informed constraints.*
 
-![Attention Heatmap of Physics-Informed Model](image-1.png)
+![Attention Heatmap of Physics-Informed Model](assets/images/attention_visualization.png)
 *XAI Visualization: The model correctly focuses on the particle track (high energy deposition area).*
 
 ## Installation
