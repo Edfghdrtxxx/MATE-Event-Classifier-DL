@@ -5,7 +5,7 @@
 
 ## Overview
 
-**MATE-Event-Classifier-DL** is a robust deep learning framework designed for the **MATE (Multi-purpose Active-target Time projection chamber for nuclear astrophysical and exotic beam Experiments)**. It addresses the critical challenge of **automated particle identification** in high-energy nuclear physics experiments using physics-informed deep learning.
+**MATE-Event-Classifier-DL** is a robust deep learning framework designed for the **MATE (Multi-purpose Active-target Time projection chamber for nuclear astrophysical and exotic beam Experiments)**. It addresses the critical challenge of **automated particle identification** in medium/low-energy nuclear physics experiments using physics-informed deep learning.
 
 This project implements a **Physics-Informed Hybrid Architecture** that fuses Time Projection Chamber (TPC) sensor data with physical state parameters (Moment of Inertia tensor features). The model is currently trained on **high-fidelity Monte Carlo simulations** (MATESIM based on Geant4) to establish a baseline for identifying rare isotopes (³He vs ⁴He) in complex experimental environments.
 
@@ -173,4 +173,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **MATESIM Toolkit**: Monte Carlo simulation framework based on Geant4
 - **MATE-TPC Collaboration**: For providing the experimental context and physics insights
+
 
