@@ -21,7 +21,7 @@ This project addresses the challenge of **automated particle identification** in
 ## Key Features
 
 ### ⚛️ Physics-Informed Architecture
-- Explicit injection of **physical state vectors** (Moment of Inertia Tensor: I_xx, I_yy, I_xy = I_yx + Total Deposition) into the model
+- Explicit injection of **physical state vectors** (Moment of Inertia Tensor: I_xx, I_yy, I_xy = I_yx ; Total Deposition) into the model
 - Physics features guide attention via **Cross-Attention** and **Gated Fusion** mechanisms
 - Ensures model predictions are grounded in physical constraints
 
@@ -228,4 +228,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Institute of Modern Physics, CAS** for MATE detector data and MATESIM simulation framework
 - **RIKEN & Osaka University RCNP** for collaborative research opportunities
 - The PyTorch and `timm` communities for excellent deep learning tools
+
 
