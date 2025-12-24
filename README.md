@@ -61,7 +61,7 @@ This project addresses the challenge of **automated particle identification** in
 
 ![Attention Correct](assets/images/attention_visualization_correct.jpg)
 
-*The model correctly focuses on the particle track region with high energy deposition.*
+*The model correctly focuses on the particle track region with high energy deposition and specific physics features(e.g. Bragg Peak).*
 
 **Distracted Model:**
 
