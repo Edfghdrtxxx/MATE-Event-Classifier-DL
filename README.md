@@ -82,9 +82,10 @@ The framework supports multiple classification tasks:
 
 *Comparison of model accuracy with and without Physics-Informed constraints.*
 
-![Attention Visualization](assets/images/attention_visualization.png)
-
-*XAI Visualization: The model correctly focuses on the particle track (high energy deposition area).*
+| Well-Trained Model | Distracted Model |
+|:------------------:|:----------------:|
+| ![Attention Correct](assets/images/attention_visualization_correct.jpg) | ![Attention Distracted](assets/images/attention_visualization_distracted.jpg) |
+| *The model correctly focuses on the particle track region with high energy deposition.* | *A poorly-trained model shows scattered, unfocused attention across irrelevant regions.* |
 
 ---
 
