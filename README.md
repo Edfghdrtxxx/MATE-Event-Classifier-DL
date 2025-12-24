@@ -183,7 +183,7 @@ These features encode the **geometric shape** of particle tracks, providing phys
 | Parameter | Value |
 |-----------|-------|
 | Optimizer | AdamW (lr=1e-4, weight_decay=1e-4) |
-| Scheduler | CosineAnnealingLR / ReduceLROnPlateau |
+| Scheduler | (Warm up)CosineAnnealingLR / (Warm up)ReduceLROnPlateau |
 | Loss | CrossEntropyLoss (with optional class weights) |
 | Data Split | 80% train, 20% validation |
 | Batch Size | 64 |
@@ -228,6 +228,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Institute of Modern Physics, CAS** for MATE detector data and MATESIM simulation framework
 - **RIKEN** for collaborative research opportunities
 - The PyTorch and `timm` communities for excellent deep learning tools
+
 
 
 
