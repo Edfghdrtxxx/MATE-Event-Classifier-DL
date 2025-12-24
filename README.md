@@ -73,9 +73,9 @@ The framework supports multiple classification tasks:
 
 | Task | Classes | Best Accuracy |
 |------|---------|---------------|
-| Binary (³He vs ⁴He) | 2 | ~99%+ |
-| Binary (¹²C vs ¹³C) | 2 | ~99%+ |
-| Proton-Deuteron-Triton | 3 | ~97%+ |
+| Binary (³He vs ⁴He) | 2 | ~95%+ |
+| Binary (¹²C vs ¹³C) | 2 | ~92%+ |
+| Proton-Deuteron-Triton | 3 | ~95%+ |
 | 5-Class (p, d, t, ³He, α) | 5 | ~95%+ |
 
 ![Performance Comparison](assets/images/performance_comparison.png)
@@ -228,6 +228,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Institute of Modern Physics, CAS** for MATE detector data and MATESIM simulation framework
 - **RIKEN** for collaborative research opportunities
 - The PyTorch and `timm` communities for excellent deep learning tools
+
 
 
 
