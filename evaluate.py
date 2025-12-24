@@ -9,35 +9,62 @@ import os
 from tqdm import tqdm
 import json
 
-def evaluate(args):
+# Class name mappings for different classification tasks
+CLASS_NAMES = {
+    2: ['3He', '4He'],
+    3: ['Proton', 'Deuteron', 'Triton'],
+    5: ['Proton', 'Deuteron', 'Triton', '3He', 'Alpha']
+}
+
+def evaluate(args, config):
     print(f"=" * 60)
     print(f"MATE Event Classifier Evaluation")
     print(f"=" * 60)
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"✓ Using device: {device}")
+    print(f"Using device: {device}")
 
     # 1. Load Model
     print("\nInitializing model...")
-    model = PhysicsInformedHybridModel(
-        num_classes=2,           # 3He vs 4He
-        num_physics_params=4,    # Moment of Inertia features
-        embed_dim=256,
-        num_heads=8,
-        num_layers=4,
-        dropout=0.1,
-        in_channels=2
-    ).to(device)
     
-    # Load checkpoint
+    # Try to load config from checkpoint first
+    model_config = {
+        'num_classes': args.num_classes,
+        'img_height': args.img_height,
+        'img_width': args.img_width,
+        'embed_dim': args.embed_dim,
+        'num_heads': args.num_heads,
+        'num_layers': args.num_layers
+    }
+    
     if os.path.exists(args.checkpoint):
-        print(f"✓ Loading checkpoint: {args.checkpoint}")
+        print(f"Loading checkpoint: {args.checkpoint}")
         checkpoint = torch.load(args.checkpoint, map_location=device)
         
-        # Handle different checkpoint formats
+        # Load config from checkpoint if available
+        if 'config' in checkpoint:
+            saved_config = checkpoint['config']
+            model_config.update(saved_config)
+            print(f"  Using config from checkpoint:")
+            for k, v in saved_config.items():
+                print(f"    {k}: {v}")
+    
+    model = PhysicsInformedHybridModel(
+        num_classes=model_config['num_classes'],
+        num_physics_params=config['model']['num_physics_params'],
+        embed_dim=model_config['embed_dim'],
+        num_heads=model_config['num_heads'],
+        num_layers=model_config['num_layers'],
+        dropout=config['model']['dropout'],
+        in_channels=config['model']['in_channels'],
+        img_height=model_config['img_height'],
+        img_width=model_config['img_width']
+    ).to(device)
+    
+    # Load checkpoint weights
+    if os.path.exists(args.checkpoint):
         if 'model_state_dict' in checkpoint:
             model.load_state_dict(checkpoint['model_state_dict'])
-            print(f"  Checkpoint info:")
             if 'epoch' in checkpoint:
                 print(f"    Epoch: {checkpoint['epoch']}")
             if 'val_acc' in checkpoint:
@@ -45,7 +72,7 @@ def evaluate(args):
         else:
             model.load_state_dict(checkpoint)
     else:
-        print(f"⚠ Warning: Checkpoint not found at {args.checkpoint}")
+        print(f"Warning: Checkpoint not found at {args.checkpoint}")
         print(f"  Using randomly initialized weights for demonstration.")
 
     model.eval()
@@ -57,7 +84,9 @@ def evaluate(args):
         mode='test',
         data_dir=args.data_dir,
         num_workers=args.num_workers,
-        max_samples_per_class=args.max_samples_per_class
+        max_samples_per_class=args.max_samples_per_class,
+        img_height=model_config['img_height'],
+        img_width=model_config['img_width']
     )
 
     # 3. Inference Loop
@@ -105,7 +134,10 @@ def evaluate(args):
     print("Evaluation Results")
     print("=" * 60)
     
-    class_names = ['3He', '4He']
+    # Get class names based on number of classes
+    num_classes = model_config['num_classes']
+    class_names = CLASS_NAMES.get(num_classes, [f'Class_{i}' for i in range(num_classes)])
+    
     metrics = compute_classification_metrics(all_targets, all_preds, class_names)
     
     print(f"\nOverall Performance:")
@@ -143,7 +175,7 @@ def evaluate(args):
         for idx in range(min(args.num_vis_samples, len(sample_images))):
             true_label = class_names[sample_labels[idx]]
             pred_label = class_names[sample_preds[idx]]
-            correct = "✓" if sample_labels[idx] == sample_preds[idx] else "✗"
+            correct = "correct" if sample_labels[idx] == sample_preds[idx] else "wrong"
             
             save_path = os.path.join(
                 args.output_dir, 
@@ -153,12 +185,15 @@ def evaluate(args):
             visualize_attention_map(
                 sample_images[idx],
                 sample_attentions[idx],
-                num_heads=8,
+                num_heads=model_config['num_heads'],
                 save_path=save_path,
-                show_individual_heads=args.show_individual_heads
+                show_individual_heads=args.show_individual_heads,
+                img_height=model_config['img_height'],
+                img_width=model_config['img_width']
             )
             
-            print(f"  ✓ Sample {idx+1}: True={true_label}, Pred={pred_label} {correct}")
+            status = "Correct" if correct == "correct" else "Wrong"
+            print(f"  Sample {idx+1}: True={true_label}, Pred={pred_label} ({status})")
     
     # 6. Save Results
     results = {
@@ -168,7 +203,8 @@ def evaluate(args):
             'true_labels': all_targets.tolist(),
             'predictions': all_preds.tolist()
         },
-        'class_names': class_names
+        'class_names': class_names,
+        'model_config': model_config
     }
     
     results_path = os.path.join(args.output_dir, "evaluation_results.json")
@@ -194,8 +230,20 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="MATE Event Classifier Evaluation")
     
     # Model parameters
-    parser.add_argument('--checkpoint', type=str, default='checkpoints/best_model.pth',
+    parser.add_argument('--checkpoint', type=str, default='outputs/best_model.pth',
                        help='Path to model checkpoint')
+    parser.add_argument('--num_classes', type=int, default=config['model']['num_classes'],
+                       help='Number of classes')
+    parser.add_argument('--embed_dim', type=int, default=config['model']['embed_dim'],
+                       help='Embedding dimension')
+    parser.add_argument('--num_heads', type=int, default=config['model']['num_heads'],
+                       help='Number of attention heads')
+    parser.add_argument('--num_layers', type=int, default=4,
+                       help='Number of transformer layers')
+    parser.add_argument('--img_height', type=int, default=config['data']['img_height'],
+                       help='Image height')
+    parser.add_argument('--img_width', type=int, default=config['data']['img_width'],
+                       help='Image width')
     
     # Data parameters
     parser.add_argument('--data_dir', type=str, default=config['data']['data_dir'],
@@ -220,4 +268,4 @@ if __name__ == "__main__":
                        help='Directory to save evaluation results')
     
     args = parser.parse_args()
-    evaluate(args)
+    evaluate(args, config)

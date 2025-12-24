@@ -10,7 +10,7 @@ import os
 import json
 from tqdm import tqdm
 
-def train(args):
+def train(args, config):
     print(f"=" * 60)
     print(f"MATE Event Classifier Training")
     print(f"=" * 60)
@@ -19,12 +19,13 @@ def train(args):
     print(f"  Batch size: {args.batch_size}")
     print(f"  Learning rate: {args.lr}")
     print(f"  Number of classes: {args.num_classes}")
+    print(f"  Image size: {args.img_height}x{args.img_width}")
     print(f"  Data directory: {args.data_dir}")
     print(f"=" * 60)
     
     # 1. Setup Device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"✓ Using device: {device}")
+    print(f"Using device: {device}")
 
     # 2. Load Data
     print("\nLoading datasets...")
@@ -33,7 +34,9 @@ def train(args):
         mode='train',
         data_dir=args.data_dir,
         num_workers=args.num_workers,
-        max_samples_per_class=args.max_samples_per_class
+        max_samples_per_class=args.max_samples_per_class,
+        img_height=args.img_height,
+        img_width=args.img_width
     )
     
     val_loader = get_dataloader(
@@ -41,29 +44,44 @@ def train(args):
         mode='val',
         data_dir=args.data_dir,
         num_workers=args.num_workers,
-        max_samples_per_class=args.max_samples_per_class
+        max_samples_per_class=args.max_samples_per_class,
+        img_height=args.img_height,
+        img_width=args.img_width
     )
     
-    # 3. Initialize Model
+    # 3. Initialize Model with config parameters
     print("\nInitializing Physics-Informed Hybrid Model...")
     model = PhysicsInformedHybridModel(
         num_classes=args.num_classes,
-        num_physics_params=4,  # Moment of Inertia features (I_xx, I_yy, I_xy, Eigen_Ratio)
-        embed_dim=256,
-        num_heads=8,
-        num_layers=4,
-        dropout=0.1,
-        in_channels=2  # TPC data: Charge + Time
+        num_physics_params=config['model']['num_physics_params'],
+        embed_dim=args.embed_dim,
+        num_heads=args.num_heads,
+        num_layers=args.num_layers,
+        dropout=config['model']['dropout'],
+        in_channels=config['model']['in_channels'],
+        img_height=args.img_height,
+        img_width=args.img_width
     ).to(device)
     
-    print(f"✓ Model initialized with {sum(p.numel() for p in model.parameters()):,} parameters")
+    print(f"Model initialized with {sum(p.numel() for p in model.parameters()):,} parameters")
 
     # 4. Optimizer & Loss & Scheduler
-    optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=1e-5)
-    criterion = nn.CrossEntropyLoss()
-    scheduler = optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer, mode='min', factor=0.5, patience=5
+    optimizer = optim.AdamW(
+        model.parameters(), 
+        lr=args.lr, 
+        weight_decay=config['training']['weight_decay']
     )
+    criterion = nn.CrossEntropyLoss()
+    
+    # Scheduler selection
+    if config['training']['scheduler'] == 'cosine':
+        scheduler = optim.lr_scheduler.CosineAnnealingLR(
+            optimizer, T_max=args.epochs, eta_min=1e-6
+        )
+    else:
+        scheduler = optim.lr_scheduler.ReduceLROnPlateau(
+            optimizer, mode='min', factor=0.5, patience=5
+        )
 
     # 5. Training Loop
     print("\nStarting training...")
@@ -128,7 +146,10 @@ def train(args):
         val_acc = 100.0 * val_correct / val_total
         
         # Update learning rate
-        scheduler.step(avg_val_loss)
+        if config['training']['scheduler'] == 'cosine':
+            scheduler.step()
+        else:
+            scheduler.step(avg_val_loss)
         current_lr = optimizer.param_groups[0]['lr']
         
         # Record history
@@ -152,9 +173,17 @@ def train(args):
                 'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
                 'val_acc': val_acc,
-                'val_loss': avg_val_loss
+                'val_loss': avg_val_loss,
+                'config': {
+                    'num_classes': args.num_classes,
+                    'img_height': args.img_height,
+                    'img_width': args.img_width,
+                    'embed_dim': args.embed_dim,
+                    'num_heads': args.num_heads,
+                    'num_layers': args.num_layers
+                }
             }, os.path.join(args.save_dir, "best_model.pth"))
-            print(f"  ✓ New best model saved! (Val Acc: {val_acc:.2f}%)")
+            print(f"  New best model saved! (Val Acc: {val_acc:.2f}%)")
         
         print("-" * 60)
 
@@ -184,6 +213,10 @@ if __name__ == "__main__":
                        help='Directory containing HDF5 data files')
     parser.add_argument('--max_samples_per_class', type=int, default=None,
                        help='Maximum samples per class (None = use all data)')
+    parser.add_argument('--img_height', type=int, default=config['data']['img_height'],
+                       help='Image height (default: 80 for Y-Z projection)')
+    parser.add_argument('--img_width', type=int, default=config['data']['img_width'],
+                       help='Image width (default: 48 for Y-Z projection)')
     
     # Training parameters
     parser.add_argument('--epochs', type=int, default=config['training']['epochs'], 
@@ -197,11 +230,17 @@ if __name__ == "__main__":
     
     # Model parameters
     parser.add_argument('--num_classes', type=int, default=config['model']['num_classes'], 
-                       help='Number of classes (2 for 3He vs 4He)')
+                       help='Number of classes (2 for binary, 5 for 5-class)')
+    parser.add_argument('--embed_dim', type=int, default=config['model']['embed_dim'],
+                       help='Embedding dimension')
+    parser.add_argument('--num_heads', type=int, default=config['model']['num_heads'],
+                       help='Number of attention heads')
+    parser.add_argument('--num_layers', type=int, default=4,
+                       help='Number of transformer layers')
     
     # Save parameters
     parser.add_argument('--save_dir', type=str, default=config['training']['save_dir'],
                        help='Directory to save model checkpoints')
     
     args = parser.parse_args()
-    train(args)
+    train(args, config)

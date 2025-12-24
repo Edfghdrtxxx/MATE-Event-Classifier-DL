@@ -85,7 +85,7 @@ def visualize_attention_map(img: torch.Tensor,
         img_height (int): Height of input images (default: 80 for Y-Z projection).
         img_width (int): Width of input images (default: 48 for Y-Z projection).
     """
-    import cv2
+    from scipy.ndimage import zoom
     
     # 1. Prepare Image
     # Convert tensor to numpy and use the charge deposition channel (channel 0) for visualization
@@ -119,8 +119,10 @@ def visualize_attention_map(img: torch.Tensor,
     # Reshape to 2D grid
     attn_map = avg_attn.reshape(grid_h, grid_w)
 
-    # Upsample attention map to image size
-    attn_map_resized = cv2.resize(attn_map, (img_width, img_height), interpolation=cv2.INTER_LINEAR)
+    # Upsample attention map to image size using scipy zoom
+    zoom_h = img_height / grid_h
+    zoom_w = img_width / grid_w
+    attn_map_resized = zoom(attn_map, (zoom_h, zoom_w), order=1)  # order=1 for bilinear
 
     # Normalize attention map for heatmap
     attn_map_resized = (attn_map_resized - attn_map_resized.min()) / (attn_map_resized.max() - attn_map_resized.min() + 1e-8)
@@ -140,7 +142,7 @@ def visualize_attention_map(img: torch.Tensor,
         # Plot individual heads
         for head_idx in range(min(num_heads, 8)):
             head_attn = spatial_attn[head_idx].reshape(grid_h, grid_w)
-            head_attn_resized = cv2.resize(head_attn, (img_width, img_height), interpolation=cv2.INTER_LINEAR)
+            head_attn_resized = zoom(head_attn, (zoom_h, zoom_w), order=1)
             head_attn_resized = (head_attn_resized - head_attn_resized.min()) / (head_attn_resized.max() - head_attn_resized.min() + 1e-8)
 
             axes[head_idx + 1].imshow(img_rgb)
