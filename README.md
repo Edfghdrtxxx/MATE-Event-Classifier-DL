@@ -55,6 +55,20 @@ This project addresses the challenge of **automated particle identification** in
 
 ---
 
+## Attention Visualization
+
+**Well-Trained Model:**
+
+![Attention Correct](assets/images/attention_visualization_correct.jpg)
+
+*The model correctly focuses on the particle track region with high energy deposition.*
+
+**Distracted Model:**
+
+![Attention Distracted](assets/images/attention_visualization_distracted.jpg)
+
+*A poorly-trained model shows scattered, unfocused attention across irrelevant regions.*
+
 ## Data Format
 
 | Property | Value |
@@ -82,10 +96,6 @@ The framework supports multiple classification tasks:
 
 *Comparison of model accuracy with and without Physics-Informed constraints.*
 
-| Well-Trained Model | Distracted Model |
-|:------------------:|:----------------:|
-| ![Attention Correct](assets/images/attention_visualization_correct.jpg) | ![Attention Distracted](assets/images/attention_visualization_distracted.jpg) |
-| *The model correctly focuses on the particle track region with high energy deposition.* | *A poorly-trained model shows scattered, unfocused attention across irrelevant regions.* |
 
 ---
 
