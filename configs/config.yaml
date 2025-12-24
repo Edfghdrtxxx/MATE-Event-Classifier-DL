@@ -1,30 +1,47 @@
 # Hyperparameters for MATE-Event-Classifier-DL
-# Physics-Informed Deep Learning for MATE Experiment
-# Binary Classification: 3He vs 4He particles
+# Physics-Informed Deep Learning for MATE TPC Experiment
+# Updated: 2024-12 to reflect current architecture
 
 model:
-  num_classes: 2              # Binary classification (3He vs 4He)
-  num_physics_params: 4       # Moment of Inertia features (I_xx, I_yy, I_xy, Eigen_Ratio)
-  embed_dim: 256              # Transformer embedding dimension
-  num_heads: 8                # Number of attention heads
-  num_layers: 4               # Number of transformer encoder layers
+  # Classification task
+  num_classes: 5              # 5-class: Proton, Deuteron, Triton, 3He, Alpha
+                              # Also supports: 2 (binary), 3 (pdt)
+  
+  # Physics features
+  num_physics_params: 4       # Moment of Inertia: I_xx, I_yy, I_xy, Eigen_Ratio
+  
+  # Architecture (used by V5 ViT models)
+  embed_dim: 192              # ViT embedding dimension (timm deit_tiny default)
+  num_heads: 3                # Attention heads (for timm ViT)
   dropout: 0.1                # Dropout rate
-  in_channels: 2              # TPC data channels (Charge + Time)
+  
+  # Input format
+  in_channels: 2              # Channel 0: Charge, Channel 1: Drift Time (X-coord)
 
 training:
   batch_size: 64              # Batch size for training
-  learning_rate: 0.001        # Initial learning rate
-  epochs: 80                  # Maximum number of epochs
-  weight_decay: 1e-5          # L2 regularization
-  save_dir: "checkpoints"     # Directory to save model checkpoints
+  learning_rate: 0.0001       # Initial learning rate (lower for ViT models)
+  epochs: 100                 # Maximum number of epochs
+  weight_decay: 0.0001        # L2 regularization (AdamW style)
+  save_dir: "outputs"         # Directory to save model checkpoints
+  scheduler: "cosine"         # "cosine" or "plateau"
 
 data:
-  img_size: 64                # Image resolution (64x64 for MATE TPC)
-  data_dir: "../dataset/HDF5_Form"  # Path to HDF5 data files
-  num_workers: 4              # Number of data loading workers
-  train_split: 0.8            # Fraction of data for training (rest for val/test)
+  # MATE TPC image format (Y-Z projection)
+  img_height: 80              # Y-axis bins
+  img_width: 48               # Z-axis bins
+  # Note: Images stored as (N, H, W, C) in HDF5, converted to (N, C, H, W) for PyTorch
+  
+  data_dir: "dataset/HDF5_Form"  # Path to HDF5 data files
+  num_workers: 0              # Set to 0 on Windows to avoid multiprocessing issues
+  train_split: 0.8            # Fraction of data for training
+  
+  # Detector physical dimensions (mm)
+  detector_y: [-150.0, 150.0]
+  detector_z: [0.0, 300.0]
+  drift_x: [-100.0, 100.0]
 
 evaluation:
   batch_size: 32              # Batch size for evaluation
-  num_vis_samples: 5          # Number of samples to visualize
-  output_dir: "evaluation_results"  # Directory for evaluation outputs
+  num_vis_samples: 10         # Number of attention visualizations to generate
+  output_dir: "outputs"       # Directory for evaluation outputs

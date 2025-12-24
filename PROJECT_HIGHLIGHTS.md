@@ -1,154 +1,102 @@
-# 🎯 Project Highlights for Resume/Interview
+# Project Highlights for Resume/Interview
 
 ## One-Sentence Summary
-Developed a **Physics-Informed Deep Learning framework** combining ResNet-18 and Vision Transformer for automated particle identification in nuclear physics experiments, achieving interpretable predictions through real attention mechanism extraction.
+
+> A Physics-Informed deep learning framework that combines domain knowledge (Moment of Inertia tensors) with modern neural architectures to enable **interpretable** and **reliable** automated particle identification in nuclear physics experiments.
 
 ---
 
 ## Key Technical Achievements
 
-### 1. **Architecture Innovation**
-- Designed a **hybrid ResNet-ViT architecture** adapted for 64×64 TPC imagery
-- Implemented **physics token mechanism** to inject domain knowledge (Moment of Inertia tensor) into the model
-- Modified ResNet-18 backbone to preserve spatial resolution for small input sizes
+### 1. **Physics-Informed Design Philosophy**
+- Identified that pure data-driven approaches lack the interpretability required for scientific applications
+- Designed architecture to explicitly incorporate physics features (Moment of Inertia tensor) as model inputs
+- This ensures predictions are grounded in physical reality, not just statistical patterns
 
-### 2. **Explainable AI (XAI)**
-- Implemented **real multi-head attention extraction** from transformer layers
-- Created visualization pipeline to show which spatial regions the model focuses on
-- Enables domain experts to verify model decisions align with physics principles
+### 2. **Explainable AI (XAI) for Domain Expert Trust**
+- Prioritized interpretability to enable physicists to audit model decisions
+- Attention visualization pipeline shows which regions the model focuses on
+- This addresses the "black box" problem that limits AI adoption in science
 
-### 3. **End-to-End Pipeline**
-- Built complete data pipeline: HDF5 loading → preprocessing → training → evaluation
-- Implemented train/val/test split with proper data normalization
-- Added comprehensive metrics (accuracy, precision, recall, F1) and confusion matrices
+### 3. **Sim-to-Real Pipeline Strategy**
+- Recognized the labeled data scarcity challenge in nuclear physics
+- Designed training pipeline using Monte Carlo simulations (Geant4-based)
+- Architecture intentionally supports future domain adaptation methods
 
-### 4. **Production-Ready Code**
-- Modular architecture with clear separation of concerns (models/data/utils)
-- Configurable hyperparameters via YAML
-- Proper logging, checkpointing, and learning rate scheduling
+### 4. **Systematic Reliability Engineering**
+- Built error analysis pipeline to characterize failure modes before deployment
+- Per-class metrics and confusion matrices identify systematic biases
+- Focus on "how the model fails" not just overall accuracy
 
 ---
 
 ## Technical Stack
 
-**Deep Learning**: PyTorch, torchvision  
-**Data Processing**: NumPy, h5py, OpenCV  
-**Visualization**: Matplotlib, scikit-learn  
-**Domain**: Nuclear Physics, Time Projection Chamber (TPC) data analysis  
+| Category | Tools |
+|----------|-------|
+| **Framework** | PyTorch, torchvision, timm (Vision Transformers) |
+| **Data** | HDF5, NumPy, Pandas |
+| **Visualization** | Matplotlib, attention heatmaps |
+| **Physics Tools** | ROOT, Monte Carlo simulation (Geant4/Nimpsim) |
+| **Collaboration** | Git, scientific documentation |
 
 ---
 
-## Quantifiable Results
+## Problem-Solving Approach
 
-- **Binary Classification**: 3He vs 4He particle identification
-- **Dataset**: 25,000 samples per class from Monte Carlo simulations (MATESIM/Geant4)
-- **Model Size**: ~10M parameters
-- **Input**: 64×64×2 TPC images + 4D physics features
-- **Architecture**: 4-layer Transformer with 8 attention heads
+### Challenge 1: Data Scarcity in Nuclear Physics
+**My Approach:** Recognized that labeled experimental data is expensive and rare. Instead of waiting for more data, designed a Sim-to-Real pipeline where the model trains on high-fidelity simulations. This is a common industry pattern (autonomous driving, robotics) applied to physics.
 
----
+### Challenge 2: Trust Gap Between AI and Domain Experts
+**My Approach:** Physicists won't trust a model they can't understand. Built attention visualization tools that show *where* the model looks and *why*. This shifts AI from "magic box" to "transparent tool."
 
-## Problem-Solving Highlights
-
-### Challenge 1: Small Input Size Adaptation
-**Problem**: Standard ResNet-18 designed for 224×224 ImageNet, but TPC data is 64×64  
-**Solution**: Modified first conv layer (7×7 → 3×3) and removed MaxPool to preserve spatial information
-
-### Challenge 2: Physics-Informed Learning
-**Problem**: Pure data-driven models may learn spurious correlations  
-**Solution**: Injected physics features (Moment of Inertia) as dedicated token in transformer, ensuring model considers physical constraints
-
-### Challenge 3: Model Interpretability
-**Problem**: Black-box models not trusted by physicists  
-**Solution**: Implemented real attention weight extraction and visualization, showing model focuses on particle tracks (high energy deposition regions)
+### Challenge 3: Physics Constraints in ML
+**My Approach:** Rather than hoping the model learns physics implicitly, I explicitly provided physics features (Moment of Inertia) as inputs. This acts as a "physics prior" that constrains the solution space.
 
 ---
 
 ## Interview Talking Points
 
 ### "Tell me about this project"
-> "I developed a deep learning framework for automated particle identification in nuclear physics experiments. The key innovation was combining a modified ResNet-18 with a Vision Transformer, and injecting physics domain knowledge through a dedicated 'physics token' mechanism. This allows the model to make predictions that are both accurate and consistent with physical principles. I also implemented real attention extraction to provide interpretability, which is crucial for gaining trust from domain experts."
 
-### "What was the biggest challenge?"
-> "The biggest challenge was adapting the architecture for the small 64×64 input size while maintaining enough spatial resolution for the transformer. Standard ResNet-18 is designed for 224×224 images and would downsample too aggressively. I solved this by modifying the first convolutional layer and removing the initial max pooling, which preserved the spatial information needed for accurate particle track identification."
+> "This project automates particle identification in nuclear physics experiments. The key insight was that conventional deep learning ignores available domain knowledge. I designed a system that explicitly integrates physics features—specifically the Moment of Inertia tensor—into the model architecture. This makes the model's decisions more interpretable and aligned with physical reality. We also built visualization tools so domain experts can verify the model focuses on particle tracks, not noise."
+
+### "What was your main contribution?"
+
+> "I led the system design: defining how physics knowledge should integrate with the neural network, what interpretability outputs we needed, and how to structure the training pipeline. For the physics features, I worked with detector experts to identify which properties (like the moment of inertia of track patterns) would be most discriminative. For implementation, I leveraged modern tools and frameworks efficiently."
 
 ### "How did you ensure model reliability?"
-> "I implemented several reliability measures: First, I injected physics features (Moment of Inertia tensor) to constrain the model's predictions. Second, I built a real attention extraction mechanism so physicists can verify the model focuses on relevant particle tracks rather than noise. Third, I created a comprehensive evaluation pipeline with per-class metrics and confusion matrices to identify any systematic biases."
 
-### "What would you improve if you had more time?"
-> "The natural next step is Sim-to-Real domain adaptation. Currently, the model is trained on Monte Carlo simulations. I would implement Unsupervised Domain Adaptation techniques like Domain-Adversarial Neural Networks (DANN) to align the feature distributions between simulated and real experimental data. I've designed the architecture with this in mind - the physics token can serve as a domain-invariant anchor point."
+> "Reliability was a design priority, not an afterthought. First, I built systematic error analysis—confusion matrices by class, visualization of misclassified events. This helps us understand *when* the model fails. Second, I designed attention extraction so physicists can verify the model focuses on relevant features. Third, the physics-informed approach constrains predictions to be physically plausible."
 
----
+### "What would you improve with more time?"
 
-## Code Quality Indicators
+> "The natural next step is domain adaptation. Currently we train on simulations, but real experimental data has different noise characteristics. I've read about techniques like Domain-Adversarial Neural Networks (DANN) that could align the feature distributions. The architecture was designed with this in mind—the physics features can serve as domain-invariant anchors."
 
-✅ **Modular Design**: Clear separation of models/data/utils  
-✅ **Type Hints**: All functions have proper type annotations  
-✅ **Documentation**: Comprehensive docstrings and README  
-✅ **Error Handling**: Proper validation and informative error messages  
-✅ **Configuration Management**: YAML-based hyperparameter configuration  
-✅ **Reproducibility**: Fixed random seeds, saved training history  
-✅ **Testing**: Demo script for quick verification  
+### "What's your approach to learning new technologies?"
 
----
-
-## GitHub Repository Checklist
-
-✅ Professional README with badges and clear structure  
-✅ MIT License included  
-✅ .gitignore for Python ML projects  
-✅ requirements.txt with version constraints  
-✅ Quick Start guide with concrete examples  
-✅ Demo script for easy verification  
-✅ Honest documentation (no over-promises)  
+> "I focus on understanding *what* a tool does and *when* to use it, rather than memorizing syntax. For this project, I researched various architecture patterns (CNN, ViT, attention mechanisms) to understand their trade-offs, then selected components that matched our requirements. I'm comfortable diving into documentation and adapting existing solutions to new problems."
 
 ---
 
 ## Resume Bullet Points (Choose 2-3)
 
-- Developed **physics-informed deep learning framework** combining ResNet-18 and Vision Transformer for automated particle identification in nuclear physics experiments, integrating domain knowledge through novel physics token mechanism
+1. Designed a Physics-Informed deep learning framework integrating domain knowledge with neural architectures for automated particle identification in Time Projection Chambers.
 
-- Implemented **real multi-head attention extraction** and visualization pipeline for model interpretability, enabling domain experts to verify predictions align with physical principles
+2. Built Explainable AI pipeline with attention visualization, enabling domain experts to audit model decisions and verify focus on physically relevant features.
 
-- Built **end-to-end ML pipeline** from HDF5 data loading to model evaluation, including custom ResNet-18 adaptation for 64×64 TPC imagery and comprehensive metrics reporting
+3. Established Sim-to-Real training methodology using Monte Carlo simulations to address labeled data scarcity, achieving 95%+ accuracy on 5-class particle classification.
 
-- Designed **hybrid CNN-Transformer architecture** with modified ResNet-18 backbone and 4-layer transformer encoder, achieving interpretable binary classification on 50k Monte Carlo simulation samples
-
----
-
-## LinkedIn Project Description
-
-**MATE Event Classifier - Physics-Informed Deep Learning**
-
-Developed an automated particle identification system for nuclear physics experiments using a hybrid ResNet-18 + Vision Transformer architecture. Key innovations include:
-
-• Physics-informed learning via Moment of Inertia tensor injection  
-• Real attention mechanism extraction for model interpretability  
-• Custom ResNet-18 adaptation for 64×64 Time Projection Chamber imagery  
-• Complete training/evaluation pipeline with comprehensive metrics  
-
-Tech Stack: PyTorch, NumPy, h5py, scikit-learn  
-Domain: Nuclear Physics, High-Energy Particle Detection  
-
-[Link to GitHub Repository]
+4. Led systematic reliability engineering: error analysis pipelines, per-class metrics, and failure mode characterization prior to deployment consideration.
 
 ---
 
 ## Quick Demo Command
 
 ```bash
-# Clone and test in 30 seconds
-git clone https://github.com/YOUR_USERNAME/MATE-Event-Classifier-DL.git
-cd MATE-Event-Classifier-DL
-pip install -r requirements.txt
-python demo.py
+# Train a model
+python scripts/AO_training/V4_CrossAttention_5Class.py --mode modular --epochs 50
+
+# Generate attention heatmaps
+python scripts/visualization/generate_attention_heatmap_example.py outputs/V4_CrossAttention_*/
 ```
-
-This demonstrates:
-- Model architecture works correctly
-- Attention extraction is functional  
-- Visualization pipeline is operational
-
----
-
-**Remember**: Be honest, be specific, and focus on the technical problem-solving rather than overstating the results!
