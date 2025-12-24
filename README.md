@@ -196,7 +196,7 @@ These features encode the **geometric shape** of particle tracks, providing phys
 - [x] **Phase 2:** Multi-class classification (5-class, isotope pairs)
 - [x] **Phase 3:** Dual-mode data loading (modular + legacy support)
 - [x] **Phase 4:** Attention-based XAI visualization pipeline
-- [ ] **Phase 5:** Sim-to-Real Domain Adaptation (UDA/DANN) — *In Progress*
+- [ ] **Phase 5:** Sim-to-Real Domain Adaptation (UDA:DANN/MCD) — *In Progress*
 - [ ] **Phase 6:** Deployment for real MATE experimental data
 - [ ] **Phase 7:** Excitation spectrum reconstruction
 
@@ -228,6 +228,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Institute of Modern Physics, CAS** for MATE detector data and MATESIM simulation framework
 - **RIKEN** for collaborative research opportunities
 - The PyTorch and `timm` communities for excellent deep learning tools
+
 
 
 
