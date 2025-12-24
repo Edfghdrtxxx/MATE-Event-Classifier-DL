@@ -226,8 +226,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgments
 
 - **Institute of Modern Physics, CAS** for MATE detector data and MATESIM simulation framework
-- **RIKEN & Osaka University RCNP** for collaborative research opportunities
+- **RIKEN** for collaborative research opportunities
 - The PyTorch and `timm` communities for excellent deep learning tools
+
 
 
 
