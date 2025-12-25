@@ -221,7 +221,7 @@ If you use this code in your research, please cite:
 @software{hu2024mate,
   author = {Hu, Zhiheng},
   title = {MATE-Event-Classifier-DL: Physics-Informed Deep Learning for TPC Particle Identification},
-  year = {2024},
+  year = {2025},
   url = {https://github.com/Edfghdrtxxx/MATE-Event-Classifier-DL}
 }
 ```
@@ -239,6 +239,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Institute of Modern Physics, CAS** for MATE detector data and MATESIM simulation framework
 - **RIKEN** for collaborative research opportunities
 - The PyTorch and `timm` communities for excellent deep learning tools
+
 
 
 
