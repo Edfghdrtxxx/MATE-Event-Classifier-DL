@@ -92,6 +92,13 @@ The framework supports multiple classification tasks:
 | Proton-Deuteron-Triton | 3 | ~95%+ |
 | 5-Class (p, d, t, ³He, α) | 5 | ~95%+ |
 
+<p float="left">
+  <img src="assets/images/3He.png" width="45%" />
+  <img src="assets/images/4He.png" width="45%" /> 
+</p>
+
+*Visualization of typical ³He (left) and ⁴He (right) particle tracks in the TPC.*
+
 ![Performance Comparison](assets/images/performance_comparison.png)
 
 *Comparison of model accuracy with and without Physics-Informed constraints in 3He Vs 4He task.*
