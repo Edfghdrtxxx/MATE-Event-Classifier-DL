@@ -93,8 +93,8 @@ The framework supports multiple classification tasks:
 | 5-Class (p, d, t, ³He, α) | 5 | ~95%+ |
 
 <p float="left">
-  <img src="assets/images/3He.png" width="50%" />
-  <img src="assets/images/4He.png" width="50%" /> 
+  <img src="assets/images/3He.png" width="47%" />
+  <img src="assets/images/4He.png" width="47%" /> 
 </p>
 
 *Visualization of typical ³He (left) and ⁴He (right) particle tracks in the TPC.*
@@ -246,6 +246,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Institute of Modern Physics, CAS** for MATE detector data and MATESIM simulation framework
 - **RIKEN** for collaborative research opportunities
 - The PyTorch and `timm` communities for excellent deep learning tools
+
 
 
 
