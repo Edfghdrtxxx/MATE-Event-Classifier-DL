@@ -203,9 +203,9 @@ These features encode the **geometric shape** of particle tracks, providing phys
 
 ## Roadmap & Future Work
 
-- [x] **Phase 1:** Physics-Informed Architecture Design & Simulation Training
-- [x] **Phase 2:** Multi-class classification (5-class, isotope pairs)
-- [x] **Phase 3:** Dual-mode data loading (modular + legacy support)
+- [x] **Phase 1:** Physics-Informed Architecture Design(Cross-Attention and Gated Fusion) & Simulation Training
+- [x] **Phase 2:** Comparison of standard, Cross-Attention and Gated Gusion CNN
+- [x] **Phase 3:** Multi-class classification (5-class, Multiple Reaction Channels)
 - [x] **Phase 4:** Attention-based XAI visualization pipeline
 - [ ] **Phase 5:** Sim-to-Real Domain Adaptation (UDA:DANN/MCD) — *In Progress*
 - [ ] **Phase 6:** Deployment for real MATE experimental data
@@ -239,6 +239,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Institute of Modern Physics, CAS** for MATE detector data and MATESIM simulation framework
 - **RIKEN** for collaborative research opportunities
 - The PyTorch and `timm` communities for excellent deep learning tools
+
 
 
 
