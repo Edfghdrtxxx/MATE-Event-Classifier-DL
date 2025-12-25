@@ -93,8 +93,8 @@ The framework supports multiple classification tasks:
 | 5-Class (p, d, t, ³He, α) | 5 | ~95%+ |
 
 <p float="left">
-  <img src="assets/images/3He.png" width="45%" />
-  <img src="assets/images/4He.png" width="45%" /> 
+  <img src="assets/images/3He.png" width="50%" />
+  <img src="assets/images/4He.png" width="50%" /> 
 </p>
 
 *Visualization of typical ³He (left) and ⁴He (right) particle tracks in the TPC.*
