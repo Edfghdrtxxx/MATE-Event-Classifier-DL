@@ -97,7 +97,7 @@ The framework supports multiple classification tasks:
   <img src="assets/images/4He.png" width="47%" /> 
 </p>
 
-*Visualization of typical ³He (left) and ⁴He (right) particle tracks in the TPC.*
+*Visualization of typical ³He (left) and ⁴He (right) particle tracks in the MATE.*
 
 ![Performance Comparison](assets/images/performance_comparison.png)
 
