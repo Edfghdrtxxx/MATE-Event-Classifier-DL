@@ -33,7 +33,7 @@ This project addresses the challenge of **automated particle identification** in
 ### 🧠 Hybrid CNN-ViT Architectures
 | Model Variant | Description |
 |---------------|-------------|
-| **V3 ResNet-18** | Baseline CNN classifier adapted for 80×48 TPC images |
+| **V3 ResNet-18** | Baseline CNN classifier adapted for 80×48 MATE images |
 | **V4 CrossAttention** | ResNet-18 + Physics-guided spatial attention |
 | **V4 GatedFusion** | ResNet-18 + Learnable physics-image fusion gates |
 | **V5 ViT** | Vision Transformer with `timm` pretrained backbone |
@@ -246,6 +246,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Institute of Modern Physics, CAS** for MATE detector data and MATESIM simulation framework
 - **RIKEN** for collaborative research opportunities
 - The PyTorch and `timm` communities for excellent deep learning tools
+
 
 
 
