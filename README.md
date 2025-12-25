@@ -94,7 +94,7 @@ The framework supports multiple classification tasks:
 
 ![Performance Comparison](assets/images/performance_comparison.png)
 
-*Comparison of model accuracy with and without Physics-Informed constraints.*
+*Comparison of model accuracy with and without Physics-Informed constraints in 3He Vs 4He task.*
 
 
 ---
@@ -239,6 +239,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Institute of Modern Physics, CAS** for MATE detector data and MATESIM simulation framework
 - **RIKEN** for collaborative research opportunities
 - The PyTorch and `timm` communities for excellent deep learning tools
+
 
 
 
