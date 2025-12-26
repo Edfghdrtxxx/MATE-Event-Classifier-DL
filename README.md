@@ -59,13 +59,15 @@ This project addresses the challenge of **automated particle identification** in
 
 **Well-Trained Model:**
 
-![Attention Correct](assets/images/attention_visualization_correct.jpg)
+![Attention Correct](assets/images/attention_visualization_correct_1.png)
+![Attention Correct](assets/images/attention_visualization_correct.png)
 
 *The model correctly focuses on the particle track region with high energy deposition and specific physics features(e.g. Bragg Peak).*
 
 **Distracted Model:**
 
-![Attention Distracted](assets/images/attention_visualization_distracted.jpg)
+![Attention Distracted](assets/images/attention_visualization_distracted_1.png)
+![Attention Distracted](assets/images/attention_visualization_distracted.png)
 
 *A poorly-trained model shows scattered, unfocused attention across irrelevant regions.*
 
