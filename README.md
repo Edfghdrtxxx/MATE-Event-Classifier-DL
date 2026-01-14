@@ -21,24 +21,19 @@ This project addresses the challenge of **automated particle identification** in
 ## Key Features
 
 ### ⚛️ Physics-Informed Architecture
-- Explicit injection of **physical state vectors** (Moment of Inertia Tensor: I_xx, I_yy, I_xy = I_yx ; Total Charge Deposition) into the model
-- Physics features guide attention via **Cross-Attention** and **Gated Fusion** mechanisms
-- Ensures model predictions are grounded in physical constraints
+- Explicit injection of **physical state vectors** (Moment of Inertia Tensor: I_xx, I_yy, I_xy = I_yx ; Total Charge Deposition) into the model via a **Physics Token**
+- A compact hybrid CNN+Transformer design: a modified ResNet-18 extracts spatial features, which are fused with the physics token in a Transformer encoder
+- Real attention weights can be extracted for auditing what the physics token attends to in the image tokens
 
 ### 🔍 Real Attention-Based XAI (Explainable AI)
 - Transparent decision-making via **real attention weight extraction** (not synthetic visualizations)
 - Spatial attention heatmaps enable physicists to verify model focus
 - Systematic **error analysis pipelines** to characterize failure modes
 
-### 🧠 Hybrid CNN-ViT Architectures
-| Model Variant | Description |
-|---------------|-------------|
-| **V3 ResNet-18** | Baseline CNN classifier adapted for 80×48 MATE images |
-| **V4 CrossAttention** | ResNet-18 + Physics-guided spatial attention |
-| **V4 GatedFusion** | ResNet-18 + Learnable physics-image fusion gates |
-| **V5 ViT** | Vision Transformer with `timm` pretrained backbone |
-| **V5 ViT+CrossAttention** | ViT + Physics-informed cross-attention |
-| **V5 ViT+GatedFusion** | ViT + Gated physics-image fusion |
+### 🧠 Hybrid CNN-Transformer Architecture 
+This repository contains a compact, reproducible baseline implemented in:
+- `models/model.py` (modified ResNet-18 backbone + Transformer encoder + Physics Token)
+- `train.py` / `evaluate.py` (training + evaluation + attention visualization)
 
 ### 💻 Simulation-Based Training (Sim-to-Real Pipeline)
 - Trained on high-fidelity **Geant4-based Monte Carlo simulations** (MATESIM)
@@ -127,24 +122,27 @@ pip install -r requirements.txt
 
 ## Quick Start
 
-### 1. Prepare Data
-Convert simulated ROOT files to HDF5 format:
+### 1. Prepare Data (HDF5)
+Place your HDF5 files under `dataset/HDF5_Form/` (or set `data.data_dir` in `configs/config.yaml`).
+
+Expected keys per file:
+- `images`: `(N, H, W, 2)` (default MATE Y-Z projection is `(80, 48, 2)`)
+- `physics_features`: `(N, 4)` moment-of-inertia features
+
+### 2. Train (binary by default)
 ```bash
-python scripts/utils/root_to_hdf5_converter_v3.py --input <file>.root --output <file>.h5 --tree_name cbmsim
+python train.py --epochs 50 --batch_size 64
 ```
 
-### 2. Train a Model
+### 3. Evaluate (optionally generate attention maps)
 ```bash
-# V4 CrossAttention (Physics-Informed)
-python scripts/AO_training/V4_CrossAttention_5Class.py --mode modular --epochs 100
-
-# V5 ViT + Gated Fusion
-python scripts/AO_training/V5_ViTGatedFusion_5Class.py --mode modular --epochs 50
+python evaluate.py --checkpoint outputs/best_model.pth
 ```
 
-### 3. Evaluate
+### 4. Smoke test / installation check (no dataset needed)
 ```bash
-python scripts/evaluation/BinaryResNet_V3_comprehensive_analysis.py
+python verify.py
+python demo.py
 ```
 
 ---
@@ -153,35 +151,18 @@ python scripts/evaluation/BinaryResNet_V3_comprehensive_analysis.py
 
 ```
 MATE-Event-Classifier-DL/
-├── scripts/
-│   ├── AO_training/          # 28+ training scripts (all support dual-mode data loading)
-│   │   ├── V3_*.py           # Baseline ResNet classifiers
-│   │   ├── V4_*.py           # Physics-Informed CrossAttention & GatedFusion
-│   │   ├── V5_*.py           # Vision Transformer variants
-│   │   └── hyperparameter_sweep_*.py  # Automated hyperparameter search
-│   ├── data/                 # Unified data loading module
-│   │   ├── unified_tpc_dataset.py    # TPCDatasetConfig + create_tpc_dataloaders API
-│   │   └── tpc_config.py     # Configuration dataclass
-│   ├── models/               # Model architectures
-│   │   ├── v4_cross_attention.py
-│   │   ├── base_model.py
-│   │   └── backbones/
-│   ├── evaluation/           # Performance analysis & visualization
-│   │   ├── error_analysis.py
-│   │   ├── model_evaluator.py
-│   │   └── report_generator.py
-│   ├── visualization/        # XAI and attention heatmap generation
-│   │   ├── generate_attention_heatmap_example.py
-│   │   └── visualize_*.py
-│   └── utils/                # Data conversion & physics features
-│       ├── root_to_hdf5_converter_v3.py
-│       └── physics_features.py
-├── dataset/HDF5_Form/        # Standardized training data
-├── outputs/                  # Timestamped experiment outputs
-│   ├── V4_CrossAttention_*/  # Model weights, logs, attention files
-│   └── *.md                  # Analysis reports
-├── docs/                     # Documentation
-├── GEMINI.md                 # Project context for AI assistants
+├── configs/
+│   └── config.yaml           # Default configuration (binary by default)
+├── data/
+│   └── dataloader.py         # HDF5 dataset + stratified train/val/test split
+├── models/
+│   └── model.py              # modified ResNet-18 + Transformer + Physics Token
+├── utils/
+│   └── utils.py              # Metrics + confusion matrix + attention visualization
+├── train.py                  # Training entrypoint
+├── evaluate.py               # Evaluation entrypoint
+├── demo.py                   # Quick demo (no dataset required)
+├── verify.py                 # Quick verification tests
 └── requirements.txt
 ```
 
@@ -198,6 +179,18 @@ Eigen_Ratio : λ_max / λ_min (elongation measure)
 ```
 
 These features encode the **geometric shape** of particle tracks, providing physics-based priors that guide attention.
+
+---
+
+## Interpretation 
+This repository exposes **real attention weights** from the final Transformer layer (see `models/model.py` and `utils/utils.py`). In the default visualization we plot **what the Physics Token attends to** over the spatial tokens.
+
+Important caveats:
+- Attention is **not guaranteed causal attribution**. It is an audit signal, not a proof of “why” the network predicted a class.
+- Always compare **correct vs wrong** samples: a “good-looking” attention map on correct samples can still be misleading.
+- Minimal sanity checks (recommended):
+  - **Perturbation**: mask/zero out the most-attended regions and check prediction stability.
+  - **Counterfactual**: shuffle physics features across the batch and quantify performance drop.
 
 ### Training Configuration (Default)
 | Parameter | Value |

@@ -4,15 +4,15 @@
 
 model:
   # Classification task
-  num_classes: 5              # 5-class: Proton, Deuteron, Triton, 3He, Alpha
-                              # Also supports: 2 (binary), 3 (pdt)
+  num_classes: 2              # Default: binary (3He vs 4He)
+                              # Can be changed for multi-class tasks if file_mapping is provided.
   
   # Physics features
   num_physics_params: 4       # Moment of Inertia: I_xx, I_yy, I_xy, Eigen_Ratio
   
-  # Architecture (used by V5 ViT models)
-  embed_dim: 192              # ViT embedding dimension (timm deit_tiny default)
-  num_heads: 3                # Attention heads (for timm ViT)
+  # Architecture (ResNet-18 + Transformer with Physics Token)
+  embed_dim: 256              # Token/patch embedding dimension
+  num_heads: 8                # Transformer attention heads
   dropout: 0.1                # Dropout rate
   
   # Input format

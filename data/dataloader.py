@@ -5,6 +5,7 @@ import h5py
 from pathlib import Path
 from typing import Tuple, Optional, List
 import warnings
+from collections import Counter
 
 class MATESimDataset(Dataset):
     """
@@ -134,24 +135,64 @@ class MATESimDataset(Dataset):
         return images, physics, labels
     
     def _split_data(self, train_split: float, seed: int):
-        """Split data into train/val/test sets."""
-        np.random.seed(seed)
-        n_total = len(self.labels)
-        indices = np.random.permutation(n_total)
-        
-        # Calculate split points
-        n_train = int(n_total * train_split)
-        n_val = int(n_total * (1 - train_split) / 2)
-        
+        """Split data into train/val/test sets (stratified per class when possible)."""
+        rng = np.random.default_rng(seed)
+        labels = self.labels
+        all_indices = np.arange(len(labels))
+
+        # Build stratified splits by class label. This avoids class imbalance drift
+        # in each split and matches typical scientific reporting expectations.
+        unique_labels, counts = np.unique(labels, return_counts=True)
+
+        # If any class has too few samples, we can still split, but val/test may be empty.
+        # We keep behavior robust and print a clear warning for users.
+        if np.any(counts < 2):
+            warnings.warn(
+                "Some classes have <2 samples; stratified splitting may produce empty val/test "
+                "for those classes. Consider providing more data per class."
+            )
+
+        train_idx: list[int] = []
+        val_idx: list[int] = []
+        test_idx: list[int] = []
+
+        for c in unique_labels.tolist():
+            c_idx = all_indices[labels == c]
+            rng.shuffle(c_idx)
+
+            n_c = len(c_idx)
+            n_train_c = int(n_c * train_split)
+            n_remaining = n_c - n_train_c
+            n_val_c = int(n_remaining / 2)
+            n_test_c = n_remaining - n_val_c
+
+            train_idx.extend(c_idx[:n_train_c].tolist())
+            val_idx.extend(c_idx[n_train_c:n_train_c + n_val_c].tolist())
+            test_idx.extend(c_idx[n_train_c + n_val_c:n_train_c + n_val_c + n_test_c].tolist())
+
+        # Shuffle within each split to avoid class-order artifacts
+        rng.shuffle(train_idx)
+        rng.shuffle(val_idx)
+        rng.shuffle(test_idx)
+
+        # Print split statistics (high-signal for debugging)
+        train_counts = Counter(labels[np.array(train_idx, dtype=np.int64)].tolist()) if train_idx else {}
+        val_counts = Counter(labels[np.array(val_idx, dtype=np.int64)].tolist()) if val_idx else {}
+        test_counts = Counter(labels[np.array(test_idx, dtype=np.int64)].tolist()) if test_idx else {}
+        print(f"  Split counts (by label):")
+        print(f"    train: {dict(sorted(train_counts.items()))}")
+        print(f"    val:   {dict(sorted(val_counts.items()))}")
+        print(f"    test:  {dict(sorted(test_counts.items()))}")
+
         if self.mode == 'train':
-            indices = indices[:n_train]
+            indices = np.array(train_idx, dtype=np.int64)
         elif self.mode == 'val':
-            indices = indices[n_train:n_train + n_val]
+            indices = np.array(val_idx, dtype=np.int64)
         elif self.mode == 'test':
-            indices = indices[n_train + n_val:]
+            indices = np.array(test_idx, dtype=np.int64)
         else:
             raise ValueError(f"Invalid mode: {self.mode}. Must be 'train', 'val', or 'test'")
-        
+
         self.images = self.images[indices]
         self.physics_features = self.physics_features[indices]
         self.labels = self.labels[indices]
