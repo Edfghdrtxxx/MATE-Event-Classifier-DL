@@ -61,6 +61,10 @@ The landing page is a static HTML/CSS/JS application with no build step required
 #### Option 1: Python HTTP Server (Recommended)
 
 ```bash
+# Clone the repository (if you haven't already)
+git clone https://github.com/Edfghdrtxxx/MATE-Event-Classifier-DL.git
+cd MATE-Event-Classifier-DL
+
 # Navigate to the landing page directory
 cd landing_page
 
