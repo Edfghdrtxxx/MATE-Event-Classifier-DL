@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATE Identifier | AI-Powered Particle Track Classification</title>
+    <meta name="description"
+        content="Classify charged particle tracks from MATE detector data using state-of-the-art deep learning. Upload your MATE images and get instant results.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Particle Canvas Background -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Noise Overlay -->
+    <div class="noise-overlay"></div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-logo">
+            <a href="#" class="nav-logo-link">
+                <span class="logo-icon">◈</span>
+                <span class="logo-text">MATE Identifier</span>
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="#features" class="nav-link">Features</a>
+            <a href="#how-it-works" class="nav-link">How It Works</a>
+            <div class="nav-cta-group">
+                <a href="#try-now" class="nav-cta-main">Try Now</a>
+                <div class="nav-cta-dropdown">
+                    <button class="nav-cta-trigger">
+                        <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
+                            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                    <div class="nav-dropdown-menu">
+                        <a href="#demo-options" class="dropdown-item">
+                            <span>Run Demo</span>
+                            <span class="dropdown-hint">Use sample data</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                <span>Web Application - Now Live</span>
+            </div>
+            <h1 class="hero-title">
+                <span class="title-line">Classify Particles</span>
+                <span class="title-line title-accent">In Seconds</span>
+            </h1>
+            <p class="hero-subtitle">
+                Upload your MATE detector track images and let our
+                physics-informed AI identify Protons, Deuterons, Tritons, ³He,
+                and α particles with exceptional accuracy.
+            </p>
+            <div class="hero-cta">
+                <a href="#try-now" class="btn btn-primary">
+                    <span>Start Classifying</span>
+                    <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                </a>
+                <a href="#how-it-works" class="btn btn-secondary">See How It Works</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-value">Over 85%</span>
+                    <span class="stat-label">Accuracy</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-value">8</span>
+                    <span class="stat-label">Particle Types</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-value">&lt;1s</span>
+                    <span class="stat-label">Processing Time</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="mate-detector">
+                <!-- Detector Housing -->
+                <div class="detector-housing">
+                    <!-- Grid Lines for Scientific Look -->
+                    <div class="detector-grid"></div>
+
+                    <!-- Active Volume -->
+                    <div class="active-volume">
+                        <!-- Coordinate Marker -->
+                        <div class="origin-marker"></div>
+
+                        <!-- Particle Tracks Inside Detector -->
+                        <div class="track-container">
+                            <div class="particle-track" style="--delay: 0s; --spread: -35deg; --length: 85%;"></div>
+                            <div class="particle-track" style="--delay: 0.8s; --spread: 15deg; --length: 70%;"></div>
+                            <div class="particle-track" style="--delay: 1.6s; --spread: -10deg; --length: 90%;"></div>
+                            <div class="particle-track" style="--delay: 2.4s; --spread: 40deg; --length: 60%;"></div>
+                            <div class="particle-track" style="--delay: 3.2s; --spread: -25deg; --length: 75%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Detector Label -->
+                    <div class="detector-label">MATE</div>
+                </div>
+
+                <!-- Axis Labels -->
+                <div class="axis-label axis-y">Y (pad)</div>
+                <div class="axis-label axis-z">Z (beam)</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="section-header section-header--center">
+            <span class="section-tag">Features</span>
+            <h2 class="section-title">Why Use MATE Identifier?</h2>
+            <p class="section-subtitle">Powerful particle classification powered by cutting-edge deep learning</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 48 48" fill="none">
+                        <path d="M24 4L6 14v20l18 10 18-10V14L24 4z" stroke="currentColor" stroke-width="2" />
+                        <path d="M24 24v20M6 14l18 10 18-10" stroke="currentColor" stroke-width="2" opacity="0.5" />
+                        <circle cx="24" cy="24" r="4" fill="currentColor" />
+                    </svg>
+                </div>
+                <h3>Multiple Particle Classes</h3>
+                <p>Identify Protons (p), Deuterons (d), Tritons (t), Helium-3 (³He), Alpha particles (α) and so on from
+                    your
+                    MATE/TPC like detectors.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 48 48" fill="none">
+                        <rect x="6" y="6" width="36" height="36" rx="4" stroke="currentColor" stroke-width="2" />
+                        <path d="M6 18h36M18 18v24M30 18v24" stroke="currentColor" stroke-width="2" />
+                        <circle cx="12" cy="12" r="2" fill="currentColor" />
+                        <circle cx="24" cy="12" r="2" fill="currentColor" />
+                    </svg>
+                </div>
+                <h3>Dual-Channel Analysis</h3>
+                <p>Process both charge deposition and drift time channels for comprehensive physics information
+                    extraction.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 48 48" fill="none">
+                        <circle cx="24" cy="24" r="18" stroke="currentColor" stroke-width="2" />
+                        <path d="M24 6v12l8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </div>
+                <h3>Real-Time Results</h3>
+                <p>Get classification results in under a second. Process single images or batch upload multiple tracks.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 48 48" fill="none">
+                        <path d="M12 24l8 8 16-16" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2" />
+                    </svg>
+                </div>
+                <h3>96.8% Accuracy</h3>
+                <p>State-of-the-art Vision Transformer and ResNet models trained on extensive MATE simulation data.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 48 48" fill="none">
+                        <path d="M8 38V18l16-10 16 10v20" stroke="currentColor" stroke-width="2" />
+                        <path d="M18 38V28h12v10" stroke="currentColor" stroke-width="2" />
+                        <circle cx="24" cy="18" r="4" stroke="currentColor" stroke-width="2" />
+                    </svg>
+                </div>
+                <h3>Physics-Informed AI</h3>
+                <p>Models incorporate Moment of Inertia tensors and Bethe-Bloch constraints for physically meaningful
+                    predictions.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 48 48" fill="none">
+                        <path d="M24 4v8M24 36v8M4 24h8M36 24h8" stroke="currentColor" stroke-width="2" />
+                        <path d="M10 10l6 6M32 32l6 6M10 38l6-6M32 16l6-6" stroke="currentColor" stroke-width="2" />
+                        <circle cx="24" cy="24" r="8" stroke="currentColor" stroke-width="2" />
+                    </svg>
+                </div>
+                <h3>HDF5 & ROOT Support</h3>
+                <p>Upload HDF5 or ROOT datasets directly. Efficient handling of large-scale experimental data for any
+                    workflow.</p>
+            </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="section-header section-header--center">
+            <span class="section-tag">How It Works</span>
+            <h2 class="section-title">Three Simple Steps</h2>
+        </div>
+        <div class="steps-container">
+            <div class="step">
+                <div class="step-number">01</div>
+                <div class="step-content">
+                    <h3>Upload Your Data</h3>
+                    <p>Drag and drop your MATE track projections - accept HDF5 or ROOT datasets.</p>
+                </div>
+                <div class="step-visual">
+                    <div class="upload-icon">
+                        <svg viewBox="0 0 64 64" fill="none">
+                            <rect x="8" y="8" width="48" height="48" rx="8" stroke="currentColor" stroke-width="2"
+                                stroke-dasharray="4 4" />
+                            <path d="M32 20v24M20 32l12-12 12 12" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="step-connector"></div>
+            <div class="step">
+                <div class="step-number">02</div>
+                <div class="step-content">
+                    <h3>AI Processing</h3>
+                    <p>Our Physics-Informed model extracts features while physics priors (MoI tensors) enhance
+                        classification via cross-attention.</p>
+                </div>
+                <div class="step-visual">
+                    <div class="processing-icon">
+                        <div class="processing-ring"></div>
+                        <div class="processing-core"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="step-connector"></div>
+            <div class="step">
+                <div class="step-number">03</div>
+                <div class="step-content">
+                    <h3>Get Results</h3>
+                    <p>Receive particle classifications with confidence scores. Download results as CSV or JSON for
+                        further analysis.</p>
+                </div>
+                <div class="step-visual">
+                    <div class="results-preview">
+                        <div class="result-row"><span>Proton</span><span class="confidence">94.2%</span></div>
+                        <div class="result-row"><span>Alpha</span><span class="confidence">3.1%</span></div>
+                        <div class="result-row"><span>Deuteron</span><span class="confidence">1.8%</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo/Try Section -->
+    <section id="try-now" class="try-section">
+        <div class="section-header section-header--center">
+            <span class="section-tag">Try It Now</span>
+            <h2 class="section-title">Upload Your MATE Data</h2>
+            <p class="section-subtitle">Drag and drop files or click to browse</p>
+        </div>
+
+        <div class="upload-container">
+            <div class="upload-zone" id="upload-zone">
+                <div class="upload-content">
+                    <div class="upload-icon-large">
+                        <svg viewBox="0 0 80 80" fill="none">
+                            <rect x="10" y="10" width="60" height="60" rx="12" stroke="currentColor" stroke-width="2"
+                                stroke-dasharray="6 6" />
+                            <path d="M40 25v30M25 40l15-15 15 15" stroke="currentColor" stroke-width="3"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <p class="upload-text">Drop your files here</p>
+                    <p class="upload-subtext">or click to browse</p>
+                    <div class="upload-formats">
+                        <span class="format-badge">HDF5</span>
+                        <span class="format-badge">ROOT</span>
+                    </div>
+                </div>
+                <input type="file" id="file-input" accept=".h5,.hdf5,.root" multiple hidden>
+            </div>
+
+            <div class="demo-options" id="demo-options">
+                <p>Or try with sample data:</p>
+                <div class="sample-buttons">
+                    <button class="btn btn-sample" data-sample="proton">
+                        <span class="sample-icon">p</span>
+                        <span>Proton Sample</span>
+                    </button>
+                    <button class="btn btn-sample" data-sample="alpha">
+                        <span class="sample-icon">α</span>
+                        <span>Alpha Sample</span>
+                    </button>
+                    <button class="btn btn-sample" data-sample="mixed">
+                        <span class="sample-icon">p,d,t,...</span>
+                        <span>Mixed Sample</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Area (hidden by default) -->
+        <div class="results-container" id="results-container" style="display: none;">
+            <div class="results-header">
+                <h3>Classification Results</h3>
+                <div class="results-actions">
+                    <button class="btn btn-secondary btn-small" id="download-csv">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"
+                            height="16">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                        </svg>
+                        CSV
+                    </button>
+                    <button class="btn btn-secondary btn-small" id="download-json">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"
+                            height="16">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                        </svg>
+                        JSON
+                    </button>
+                </div>
+            </div>
+            <div class="results-table-container">
+                <table class="results-table" id="results-table">
+                    <thead>
+                        <tr>
+                            <th>File</th>
+                            <th>Prediction</th>
+                            <th>Confidence</th>
+                            <th>Top 3 Classes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-body">
+                        <!-- Results will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Particle Classes Reference -->
+    <section id="demo" class="particles-ref">
+        <div class="section-header section-header--center">
+            <span class="section-tag">Reference</span>
+            <h2 class="section-title">Supported Particle Types</h2>
+        </div>
+        <div class="particles-grid">
+            <div class="particle-card">
+                <div class="particle-symbol">p</div>
+                <h4>Proton</h4>
+                <p class="particle-info">¹H • Z=1, A=1</p>
+            </div>
+            <div class="particle-card">
+                <div class="particle-symbol">d</div>
+                <h4>Deuteron</h4>
+                <p class="particle-info">²H • Z=1, A=2</p>
+            </div>
+            <div class="particle-card">
+                <div class="particle-symbol">t</div>
+                <h4>Triton</h4>
+                <p class="particle-info">³H • Z=1, A=3</p>
+            </div>
+            <div class="particle-card">
+                <div class="particle-symbol">³He</div>
+                <h4>Helium-3</h4>
+                <p class="particle-info">³He • Z=2, A=3</p>
+            </div>
+            <div class="particle-card">
+                <div class="particle-symbol">α</div>
+                <h4>Alpha</h4>
+                <p class="particle-info">⁴He • Z=2, A=4</p>
+            </div>
+            <div class="particle-card">
+                <div class="particle-symbol">¹²C</div>
+                <h4>Carbon-12</h4>
+                <p class="particle-info">¹²C • Z=6, A=12</p>
+            </div>
+            <div class="particle-card">
+                <div class="particle-symbol">¹³C</div>
+                <h4>Carbon-13</h4>
+                <p class="particle-info">¹³C • Z=6, A=13</p>
+            </div>
+            <div class="particle-card">
+                <div class="particle-symbol">¹⁴C</div>
+                <h4>Carbon-14</h4>
+                <p class="particle-info">¹⁴C • Z=6, A=14</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <span class="logo-icon">◈</span>
+                <span class="logo-text">MATE Identifier</span>
+                <p class="footer-tagline">MATE Detector Particle Identification</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Application</h4>
+                    <a href="#features">Features</a>
+                    <a href="#how-it-works">How It Works</a>
+                    <a href="#try-now">Try Now</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <a href="#">API Documentation</a>
+                    <a href="https://github.com/Edfghdrtxxx/MATE-Event-Classifier-DL">GitHub</a>
+                    <a href="#">Research Paper</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Contact</h4>
+                    <a href="mailto:edfghdrtxxx@gmail.com">edfghdrtxxx@gmail.com</a>
+                    <p class="footer-address">Institute of Modern Physics<br>University of Chinese Academy of Sciences
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 MATE Identifier Project. All rights reserved.</p>
+            <p class="footer-tech">Powered by Physics-Informed Deep Learning</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
