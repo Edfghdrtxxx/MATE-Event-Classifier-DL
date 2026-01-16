@@ -155,6 +155,10 @@ The project includes an interactive **web-based demo interface** that allows use
 - View classification results with confidence scores
 - Download results in CSV or JSON format
 
+![Landing Page Preview](assets/images/landing_page_preview.png)
+
+*The MATE Identifier web interface with an Anthropic-inspired design.*
+
 ### Deploying the Frontend Locally
 
 The landing page is a static HTML/CSS/JS application with no build step required.
