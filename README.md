@@ -147,6 +147,64 @@ python demo.py
 
 ---
 
+## Web Demo (Landing Page)
+
+The project includes an interactive **web-based demo interface** that allows users to:
+- Upload HDF5 or ROOT files for classification
+- Try pre-loaded sample data (Proton, Alpha, Mixed)
+- View classification results with confidence scores
+- Download results in CSV or JSON format
+
+### Deploying the Frontend Locally
+
+The landing page is a static HTML/CSS/JS application with no build step required.
+
+#### Option 1: Python HTTP Server (Recommended)
+
+```bash
+# Navigate to the landing page directory
+cd landing_page
+
+# Start a local HTTP server
+python -m http.server 8080
+
+# Open in your browser
+# → http://localhost:8080
+```
+
+#### Option 2: VS Code Live Server
+
+1. Install the **Live Server** extension in VS Code
+2. Open the `landing_page/` folder
+3. Right-click `index.html` → **Open with Live Server**
+
+#### Option 3: Direct File Open
+
+Simply double-click `landing_page/index.html` to open it directly in your browser. Note: Some features (like file uploads) may be restricted due to browser security policies when using the `file://` protocol.
+
+### Frontend Structure
+
+```
+landing_page/
+├── index.html    # Main HTML structure
+├── styles.css    # Anthropic-inspired theme styling
+└── script.js     # Interactive functionality (upload, demo, etc.)
+```
+
+### Features
+
+| Feature | Description |
+|---------|-------------|
+| **File Upload** | Drag-and-drop or click to upload HDF5/ROOT files |
+| **Sample Data** | Quick demo with pre-configured Proton, Alpha, or Mixed samples |
+| **Results Table** | View predictions with confidence scores for each file |
+| **Export** | Download classification results as CSV or JSON |
+| **Responsive Design** | Works on desktop and mobile browsers |
+
+> **Note:** The web demo currently simulates classification results for demonstration purposes. To connect it to the actual PyTorch model, you would need to implement a backend API (e.g., Flask/FastAPI) that loads the trained model and processes uploaded files.
+
+---
+
 ## Project Structure
 
 ```
@@ -155,6 +213,10 @@ MATE-Event-Classifier-DL/
 │   └── config.yaml           # Default configuration (binary by default)
 ├── data/
 │   └── dataloader.py         # HDF5 dataset + stratified train/val/test split
+├── landing_page/
+│   ├── index.html            # Web demo frontend
+│   ├── styles.css            # Anthropic-inspired styling
+│   └── script.js             # Interactive functionality
 ├── models/
 │   └── model.py              # modified ResNet-18 + Transformer + Physics Token
 ├── utils/
