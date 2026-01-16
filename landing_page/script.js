@@ -11,6 +11,7 @@ class ParticleSystem {
         this.points = [];
         this.springs = [];
         this.mouse = { x: -1000, y: -1000, radius: 190 }; // Reduced influence radius (50%)
+        this.time = 0; // Time counter for ambient animation
 
         // Configuration
         this.config = {
@@ -18,7 +19,12 @@ class ParticleSystem {
             stiffness: 0.04,   // Spring stiffness (lower = wobblier)
             friction: 0.92,    // Damping (lower = more sliding)
             mouseForce: 45,    // Push strength
-            returnForce: 0.03  // Strength to return to origin
+            returnForce: 0.03, // Strength to return to origin
+            // Ambient animation settings
+            ambientAmplitude: 6.0,   // Max displacement in pixels (increased for visibility)
+            ambientSpeed: 0.003,     // Animation speed (faster)
+            ambientWaveLength: 150,  // Wavelength of the sine pattern
+            pulseSpeed: 0.05         // Speed of the mouse interaction pulse
         };
 
         // Colors
@@ -90,11 +96,28 @@ class ParticleSystem {
     }
 
     update() {
+        // Increment time for ambient animation
+        this.time += 1;
+
         // Update physics for each point
         this.points.forEach(p => {
-            // 1. Hooke's Law: Return to origin
-            const dx = p.ox - p.x;
-            const dy = p.oy - p.y;
+            // Calculate ambient wave offset (creates organic, flowing movement)
+            // Reason: Using sine waves with different frequencies creates natural-looking motion
+            const waveX = Math.sin(
+                this.time * this.config.ambientSpeed +
+                p.oy / this.config.ambientWaveLength
+            ) * this.config.ambientAmplitude;
+
+            const waveY = Math.cos(
+                this.time * this.config.ambientSpeed * 0.7 +
+                p.ox / this.config.ambientWaveLength
+            ) * this.config.ambientAmplitude * 0.8;
+
+            // 1. Hooke's Law: Return to origin + ambient offset
+            const targetX = p.ox + waveX;
+            const targetY = p.oy + waveY;
+            const dx = targetX - p.x;
+            const dy = targetY - p.y;
 
             p.vx += dx * this.config.returnForce;
             p.vy += dy * this.config.returnForce;
@@ -105,7 +128,9 @@ class ParticleSystem {
             const dist = Math.sqrt(dmx * dmx + dmy * dmy);
 
             if (dist < this.mouse.radius) {
-                const force = (1 - dist / this.mouse.radius) * this.config.mouseForce;
+                // Add a "breathing" effect to the repulsion force
+                const pulse = 1 + Math.sin(this.time * this.config.pulseSpeed) * 0.1;
+                const force = (1 - dist / this.mouse.radius) * this.config.mouseForce * pulse;
                 const angle = Math.atan2(dmy, dmx);
 
                 p.vx += Math.cos(angle) * force;
@@ -163,14 +188,16 @@ class ParticleSystem {
             const dmy = p.y - this.mouse.y;
             const dist = Math.sqrt(dmx * dmx + dmy * dmy);
 
-            if (dist < gradientRadius || disp > 0.5) {
-                const alpha = Math.min(0.6, (disp / 20) + Math.max(0, (1 - dist / gradientRadius) * 0.5));
+            // Always draw with dynamic alpha to avoid flickering at zero-crossing
+            // Dynamic alpha with "twinkle" effect
+            const twinkle = Math.sin(this.time * 0.05 + p.idx) * 0.15;
+            const baseAlpha = (disp / 20) + Math.max(0, (1 - dist / gradientRadius) * 0.5);
+            const alpha = Math.min(0.8, Math.max(0.1, baseAlpha + twinkle));
 
-                this.ctx.beginPath();
-                this.ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
-                this.ctx.fillStyle = `rgba(26, 26, 26, ${alpha})`;
-                this.ctx.fill();
-            }
+            this.ctx.beginPath();
+            this.ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+            this.ctx.fillStyle = `rgba(26, 26, 26, ${alpha})`;
+            this.ctx.fill();
         });
     }
 
